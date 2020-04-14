@@ -26,4 +26,13 @@ class Radio:
 track = Radio.fetch_track()
 composer = Radio.get_composer(track)
 title = Radio.get_title(track)
-print(composer + ": " + title) 
+
+guess_composer = input("Who do you think the composer is? Guess: ")
+
+composer_toks = composer.split(" ")
+composer_last_tok = composer_toks.pop()
+
+if guess_composer == composer or guess_composer == composer_last_tok:
+    print("Correct! The piece is " + title + " by " + composer)
+else:
+    print("Whoops! The piece is " + title + " by " + composer)
