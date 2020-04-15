@@ -35,4 +35,8 @@ composer_last_tok = composer_toks.pop()
 if guess_composer == composer or guess_composer == composer_last_tok:
     print("Correct! The piece is " + title + " by " + composer)
 else:
-    print("Whoops! The piece is " + title + " by " + composer)
+    second_guess = input("Hm, that wasn't right. Try again: ")
+    if second_guess == composer or second_guess == composer_last_tok:
+        print("Correct! The piece is " + title + " by " + composer)
+    else:
+        print("Whoops! The piece is " + title + " by " + composer)
