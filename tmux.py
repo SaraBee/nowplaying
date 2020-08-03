@@ -1,7 +1,10 @@
 from radio import Radio
 
-track = Radio.fetch_track()
-composer = Radio.get_composer(track)
-title = Radio.get_title(track)
+track = Radio.fetchTrack()
+if track:
+    composer = Radio.getComposer(track)
+    title = Radio.getTiitle(track)
 
-print(composer + " - " + title)
+    print(composer + " - " + title)
+else:
+    print("Special Programming")
