@@ -71,9 +71,11 @@ height_counter = centered_y
 for i in range (0, len(lines)):
     msg = lines[i]
     w, h = font.getsize(msg)
-    x = 20
+
+    # approximate centered x is true center minus half line length
+    x = (inky_display.WIDTH / 2) - (w / 2)
     y = height_counter
-    draw.text((x, y), msg, inky_display.BLACK, font, align='center')
+    draw.text((x, y), msg, inky_display.BLACK, font)
     height_counter += h
 
 inky_display.set_image(img)
