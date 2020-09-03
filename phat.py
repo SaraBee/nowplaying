@@ -33,17 +33,16 @@ draw = ImageDraw.Draw(img)
 font = ImageFont.truetype(FredokaOne, 20)
 
 lines = []
-
 track = Radio.fetchTrack()
 if not track:
     sys.exit()
+cache_file = '/tmp/cache'
 
-current_dir = os.path.dirname(__file__)
-cache_file = os.path.join(current_dir, 'cache')
-
-cache = open(cache_file, 'rt')
-last_track = cache.readline()
-cache.close()
+last_track = ''
+if os.path.exists(cache_file):
+    cache = open(cache_file, 'rt')
+    last_track = cache.readline()
+    cache.close()
 
 composer = Radio.getComposer(track)
 title = Radio.getTitle(track)
@@ -54,7 +53,7 @@ if last_track == composer + ' ' + title:
     sys.exit()
 
 # We open the cache file a second time in w mode to overwrite
-cache = open(cache_file, 'w')
+cache = open(cache_file, 'w+')
 cache.write(composer + ' ' + title)
 cache.close()
 
