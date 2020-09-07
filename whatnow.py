@@ -4,19 +4,20 @@ from font_fredoka_one import FredokaOne
 from radio import Radio
 import sys
 import os
+import json
 
 def formatLine(msg):
     global lines
     w, h = font.getsize(msg)
-    if w <= inky_display.WIDTH - 40:
+    if w <= inky_display.WIDTH - margin:
         # cool cool, the line fits, no split necessary
         lines.append(msg)
     else:
         toks = msg.split()
         cur_line = ''
         for tok in toks:
-            cur_w, _ = font.getsize(cur_line + tok + ' ') 
-            if cur_w <= inky_display.WIDTH - 40:
+            cur_w, _ = font.getsize(cur_line + tok + ' ')
+            if cur_w <= inky_display.WIDTH - margin:
                 cur_line = cur_line +  tok + ' '
             else:
                 lines.append(cur_line)
@@ -27,40 +28,61 @@ def formatLine(msg):
 inky_display = auto()
 inky_display.set_border(inky_display.WHITE)
 
+
+# set layout values for inkywHAT and inkypHAT
+if inky_display.HEIGHT == 300:
+    img = Image.open(os.path.join(current_dir, "whatnow.png")).resize(inky_display.resolution)
+    font_size = 32
+    margin = 40
+else:
+    img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+    font_size = 20
+    margin = 0
+
+
 current_dir = os.path.dirname(__file__)
 
-#img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
-img = Image.open(os.path.join(current_dir, "whatnow.png")).resize(inky_display.resolution)
 draw = ImageDraw.Draw(img)
 
-font = ImageFont.truetype(FredokaOne, 32)
+font = ImageFont.truetype(FredokaOne, font_size)
 
 lines = []
 
 track = Radio.fetchTrack()
 if not track:
     sys.exit()
-cache_file = '/tmp/cache'
-
-last_track = ''
-if os.path.exists(cache_file):
-    cache = open(cache_file, 'rt')
-    last_track = cache.readline()
-    cache.close()
 
 composer = Radio.getComposer(track)
 title = Radio.getTitle(track)
 
-if last_track == composer + ' ' + title:
-    print("skipping " + composer + ' ' + title)
-    # No need to update the display, it's already up to date
-    sys.exit()
+cache_file = '/tmp/cache'
+
+last_track = ''
+
+if os.path.exists(cache_file):
+    cache = open(cache_file, 'rt')
+    play_history = json.loads(cache.readline())
+    cache.close()
+
+    if play_history['current_track'] == composer + ' ' + title:
+        print("skipping " + composer + ' ' + title)
+        # No need to update the display, it's already up to date
+        sys.exit()
+
+    if play_history['last_track'] == composer + ' ' + title:
+        print("WQXR is doing that thing again, skipping " + composer + ' ' + title)
+        # Sometimes the API mysteriously returns the previous track after returning the correct one
+        sys.exit()
+
+    # time to do the shuffle, current track is now last track
+    last_track = play_history['current_track']
 
 # We open the cache file a second time in w mode to overwrite
 cache = open(cache_file, 'w+')
-cache.write(composer + ' ' + title)
+play_history = {'last_track': last_track, 'current_track': composer + ' ' + title}
+cache.write(json.dumps(play_history))
 cache.close()
- 
+
 formatLine(Radio.getComposer(track))
 formatLine(Radio.getTitle(track))
 
