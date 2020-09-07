@@ -31,6 +31,7 @@ inky_display.set_border(inky_display.WHITE)
 inky_display.colour = 'black'
 inky_display.lut = 'black'
 
+current_dir = os.path.dirname(__file__)
 
 # set layout values for inkywHAT and inkypHAT
 if inky_display.HEIGHT == 300:
@@ -41,9 +42,6 @@ else:
     img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
     font_size = 20
     margin = 0
-
-
-current_dir = os.path.dirname(__file__)
 
 draw = ImageDraw.Draw(img)
 
