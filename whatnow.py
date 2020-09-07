@@ -27,6 +27,9 @@ def formatLine(msg):
 
 inky_display = auto()
 inky_display.set_border(inky_display.WHITE)
+# Force b&w mode for speedy redraws
+inky_display.colour = 'black'
+inky_display.lut = 'black'
 
 
 # set layout values for inkywHAT and inkypHAT
