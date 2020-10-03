@@ -10,8 +10,10 @@ class Radio:
         response = requests.get(uri)
         json = response.json()
 
-        if json['current_playlist_item'] != None:
+        if 'current_playlist_item' in json and json['current_playlist_item'] != None:
             return json['current_playlist_item']['catalog_entry']
+        elif 'current_show' in json:
+            return json['current_show']
 
         return []
 
@@ -20,7 +22,9 @@ class Radio:
         return track['title']
 
     def getComposer(track):
-        return track['composer']['name']
+        if 'composer' in track:
+            return track['composer']['name']
+        return ''
 
     def getConductor(track):
         return track['conductor']['name']

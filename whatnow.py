@@ -84,7 +84,8 @@ play_history = {'last_track': last_track, 'current_track': composer + ' ' + titl
 cache.write(json.dumps(play_history))
 cache.close()
 
-formatLine(Radio.getComposer(track))
+if composer:
+    formatLine(Radio.getComposer(track))
 formatLine(Radio.getTitle(track))
 
 # approximate centered y is true center minus half lines * line height
