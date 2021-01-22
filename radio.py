@@ -1,17 +1,15 @@
 import requests
 import json
 
-base_uri = 'https://api.prod.nypr.digital/api/v1'
-now_playing_uri = '/whats_on/wqxr/3/'
+uri = 'https://api.wnyc.org/api/v1/whats_on/wqxr/'
 
 class Radio:
     def fetchTrack():
-        uri = base_uri + now_playing_uri
         response = requests.get(uri)
         json = response.json()
 
         if 'current_playlist_item' in json and json['current_playlist_item'] != None:
-            return json['current_playlist_item']['catalog_entry']
+            return json['current_playlist_item']
         elif 'current_show' in json:
             return json['current_show']
 
@@ -19,11 +17,15 @@ class Radio:
 
 
     def getTitle(track):
-        return track['title']
+        if 'title' in track:
+            return track['title']
+        elif 'catalog_entry' in track and 'title' in track['catalog_entry']:
+                return track['catalog_entry']['title']
+        return ''
 
     def getComposer(track):
-        if 'composer' in track:
-            return track['composer']['name']
+        if 'catalog_entry' in track and 'composer' in track['catalog_entry']:
+            return track['catalog_entry']['composer']['name']
         return ''
 
     def getConductor(track):

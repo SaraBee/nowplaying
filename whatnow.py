@@ -59,14 +59,12 @@ title = Radio.getTitle(track)
 
 cache_file = '/tmp/cache'
 
-last_track = ''
-
 if os.path.exists(cache_file):
     cache = open(cache_file, 'rt')
     play_history = json.loads(cache.readline())
     cache.close()
 
-    if play_history['timestamp'] <= timestamp:
+    if play_history['timestamp'] >= timestamp:
         print("skipping " + composer + ' ' + title)
         # No need to update the display, it's already up to date
         sys.exit()
