@@ -28,3 +28,12 @@ class Radio:
 
     def getConductor(track):
         return track['conductor']['name']
+
+    def getStartTime(track):
+        # if there's an actual track
+        if 'start_time_ts' in track:
+            return track['start_time_ts']
+        # if we're falling back on show
+        elif 'start_ts' in track:
+            return track['start_ts']
+        return ''

@@ -53,6 +53,7 @@ track = Radio.fetchTrack()
 if not track:
     sys.exit()
 
+timestamp = Radio.getStartTime(track)
 composer = Radio.getComposer(track)
 title = Radio.getTitle(track)
 
@@ -65,22 +66,14 @@ if os.path.exists(cache_file):
     play_history = json.loads(cache.readline())
     cache.close()
 
-    if play_history['current_track'] == composer + ' ' + title:
+    if play_history['timestamp'] <= timestamp:
         print("skipping " + composer + ' ' + title)
         # No need to update the display, it's already up to date
         sys.exit()
 
-    if play_history['last_track'] == composer + ' ' + title:
-        print("WQXR is doing that thing again, skipping " + composer + ' ' + title)
-        # Sometimes the API mysteriously returns the previous track after returning the correct one
-        sys.exit()
-
-    # time to do the shuffle, current track is now last track
-    last_track = play_history['current_track']
-
 # We open the cache file a second time in w mode to overwrite
 cache = open(cache_file, 'w+')
-play_history = {'last_track': last_track, 'current_track': composer + ' ' + title}
+play_history = {'timestamp': timestamp}
 cache.write(json.dumps(play_history))
 cache.close()
 
