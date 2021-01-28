@@ -24,7 +24,9 @@ class Radio:
         return ''
 
     def getComposer(track):
-        if 'catalog_entry' in track and 'composer' in track['catalog_entry']:
+        if 'show_title' in track:
+            return track['show_title']
+        elif 'catalog_entry' in track and 'composer' in track['catalog_entry']:
             return track['catalog_entry']['composer']['name']
         return ''
 
